@@ -1,8 +1,6 @@
 require('dotenv').config();
-const { App } = require('@slack/bolt');
 const firebaseAdmin = require('firebase-admin');
-const firebaseServiceAccount = require(process.env.FIREBASE_KEY_PATH);
-
+const { App } = require('@slack/bolt');
 
 const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -11,10 +9,20 @@ const app = new App({
 
 // Why are we using this SDK? --> Who knows.
 firebaseAdmin.initializeApp({
-  credential: firebaseAdmin.credential.cert(firebaseServiceAccount),
+  credential: firebaseAdmin.credential.cert(getFirebaseServiceAccount()),
   databaseURL: "https://jargon-jar.firebaseio.com"
 });
 const database = firebaseAdmin.database();
+
+// This is as scuffed as it is because of Heroku's constraints.
+function getFirebaseServiceAccount () {
+  if (process.env.FIREBASE_KEY_PATH) {
+    return require(process.env.FIREBASE_KEY_PATH);
+  }
+  if (process.env.FIREBASE_KEY) {
+    return JSON.parse(process.env.FIREBASE_KEY);
+  }
+}
 
 // Stores the data from the Firebase DB. TODO: Refresh the snapshot periodically
 const terms = getTerms();
