@@ -7,6 +7,6 @@ Using Node v14
 
 Create an `.env` file at project root. See `.env-EXAMPLE`.
 
-Start server:
+### Start server
 
 ```npm run start```
