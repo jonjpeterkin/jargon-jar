@@ -12,4 +12,4 @@ Create an `.env` file at project root. See `.env-EXAMPLE`.
 ```npm run start```
 
 ## Deployment
-jargon-jar is currently hosted on Heroku. It deploys automatically with pushes to `main`.
+jargon-jar is currently hosted on Heroku (https://jargon-jar.herokuapp.com/). It deploys automatically with pushes to `main`.
