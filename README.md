@@ -8,8 +8,11 @@ Using Node v14
 Create an `.env` file at project root. See `.env-EXAMPLE`.
 
 ### Start server
-
 ```npm run start```
+
+To serve with nodemon:
+
+```npm run dev``` 
 
 ## Deployment
 jargon-jar is currently hosted on Heroku (https://jargon-jar.herokuapp.com/). It deploys automatically with pushes to `main`.
