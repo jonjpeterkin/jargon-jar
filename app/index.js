@@ -58,7 +58,7 @@ app.message(async ({ payload, message, client, say }) => {
     const responseBase = `*Whoa there!* Looks like you're making alphabet soup. \nI can help translate:`;
 
     const meaningList = matches.reduce((acc, cur) => {
-      const definition = `\n• _${cur.term}_: *${cur.definition}*`;
+      const definition = `\n• ${cur.term}: *${cur.definition}*`;
       const learnMore = cur.link ? ` (<${cur.link}|learn more>)` : '';
       return acc + definition + learnMore;
     }, '');
