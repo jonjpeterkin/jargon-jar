@@ -63,9 +63,11 @@ app.message(async ({ payload, message, client, say }) => {
       return acc + definition + learnMore;
     }, '');
 
+    const donatePrompt = `\nThose acronyms are going to cost you -- <https://donate.givedirectly.org/|*consider donating to people in need with GiveDirectly*>.`;
+
     await say({
       unfurl_links: false,
-      text: responseBase + meaningList,
+      text: responseBase + meaningList + donatePrompt,
     });
   }
 
