@@ -35,10 +35,19 @@ const store = {
 app.message(async ({ payload, message, client, say }) => {
   if (message.hidden === true) return;
 
+  const response = {};
+
   switch (message.subtype) {
     // Whitelist message subtypes to respond to
-    case undefined:
-    case 'message_replied': // TODO: respond in thread
+    case undefined: // respond in thread
+      Object.assign(response, {
+        thread_ts: message.ts,
+      });
+      break;
+    case 'message_replied': // respond to parent message
+      Object.assign(response, {
+        thread_ts: message.thread_ts
+      });
       break;
     default:
       // Do nothing if subtype is not whitelisted
@@ -55,7 +64,7 @@ app.message(async ({ payload, message, client, say }) => {
   if (matches.length > 0) {
     console.log('matches found:', matches);
 
-    const responseBase = `*Whoa there!* Looks like you're making alphabet soup. \nI can help translate:`;
+    const textBase = `*Whoa there!* Looks like you're making alphabet soup. \nI can help translate:`;
 
     const meaningList = matches.reduce((acc, cur) => {
       const definition = `\n• ${cur.term}: *${cur.definition}*`;
@@ -64,11 +73,13 @@ app.message(async ({ payload, message, client, say }) => {
     }, '');
 
     const donatePrompt = `\nThose acronyms are going to cost you -- <https://donate.givedirectly.org/|*consider donating to people in need with GiveDirectly*>.`;
-
-    await say({
+    
+    Object.assign(response, {
       unfurl_links: false,
-      text: responseBase + meaningList + donatePrompt,
+      text: textBase + meaningList + donatePrompt,
     });
+
+    await say(response);
   }
 
   // try {
