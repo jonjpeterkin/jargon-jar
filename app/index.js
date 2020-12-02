@@ -55,8 +55,14 @@ app.message(async ({ payload, message, client, say }) => {
   }
 
   const matches = [];
-  store.terms.forEach((term) => {
-    if (message.text.includes(term.term)) {
+  store.terms.acronyms.forEach((term) => {
+    if (message.text.toLowerCase().includes(term.term.toLowerCase())) {
+      matches.push(term);
+    }
+  });
+
+  store.terms.buzzwords.forEach((term) => {
+    if (message.text.toLowerCase().includes(term.term.toLowerCase())) {
       matches.push(term);
     }
   });
@@ -64,19 +70,25 @@ app.message(async ({ payload, message, client, say }) => {
   if (matches.length > 0) {
     console.log('matches found:', matches);
 
-    const textBase = `*Whoa there!* Looks like you're making alphabet soup. \nI can help translate:`;
+    const textBase = `*Whoa there!* Looks like you're making alphabet soup.`;
 
     const meaningList = matches.reduce((acc, cur) => {
-      const definition = `\n• ${cur.term}: *${cur.definition}*`;
-      const learnMore = cur.link ? ` (<${cur.link}|learn more>)` : '';
-      return acc + definition + learnMore;
+      if (cur.definition) {
+        const definition = `\n• ${cur.term}: *${cur.definition}*`;
+        const learnMore = cur.link ? ` (<${cur.link}|learn more>)` : '';
+        return acc + definition + learnMore;
+      }
+
+      return '';
     }, '');
 
+    const meaningListIntro = meaningList ? `\nI can help translate:` : '';
+
     const donatePrompt = `\nThose acronyms are going to cost you -- <https://donate.givedirectly.org/|*consider donating to people in need with GiveDirectly*>.`;
-    
+
     Object.assign(response, {
       unfurl_links: false,
-      text: textBase + meaningList + donatePrompt,
+      text: textBase + meaningListIntro + meaningList + donatePrompt,
     });
 
     await say(response);
