@@ -34,25 +34,12 @@ const store = {
 // Message handler
 app.message(async ({ payload, message, client, say }) => {
   if (message.hidden === true) return;
+  if (message.subtype) return; // 'message_replied' is the only subtype we would respond to, and it's bugged in the Slack API
 
   const response = {};
 
-  switch (message.subtype) {
-    // Whitelist message subtypes to respond to
-    case undefined: // respond in thread
-      Object.assign(response, {
-        thread_ts: message.ts,
-      });
-      break;
-    case 'message_replied': // respond to parent message
-      Object.assign(response, {
-        thread_ts: message.thread_ts
-      });
-      break;
-    default:
-      // Do nothing if subtype is not whitelisted
-      return;
-  }
+  const isReply = message.thread_ts && (message.thread_ts !== message.ts);
+  response.thread_ts = isReply ? message.thread_ts : message.ts;
 
   const matches = [];
   store.terms.acronyms.forEach((term) => {
