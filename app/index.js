@@ -43,13 +43,15 @@ app.message(async ({ payload, message, client, say }) => {
 
   const matches = [];
   store.terms.acronyms.forEach((term) => {
-    if (message.text.toLowerCase().includes(term.term.toLowerCase())) {
+    const regexp = RegExp(`\\b${term.term}\\b`, 'gi');
+    if (regexp.test(message.text)) {
       matches.push(term);
     }
   });
 
   store.terms.buzzwords.forEach((term) => {
-    if (message.text.toLowerCase().includes(term.term.toLowerCase())) {
+    const regexp = RegExp(`\\b${term.term}\\b`, 'gi');
+    if (regexp.test(message.text)) {
       matches.push(term);
     }
   });
